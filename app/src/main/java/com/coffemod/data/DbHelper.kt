@@ -79,6 +79,14 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_V
         db.execSQL("CREATE INDEX idx_products_group ON products(group_id)")
         db.execSQL("CREATE INDEX idx_barcodes_product ON barcodes(product_id)")
         db.execSQL("CREATE INDEX idx_movements_product ON movements(product_id)")
+        db.execSQL(
+            """
+            CREATE TABLE aliases (
+                name TEXT PRIMARY KEY,
+                product_id INTEGER NOT NULL
+            )
+            """.trimIndent()
+        )
 
         val defaults = listOf("Кофе", "Молочка", "Сиропы", "Напитки", "Кондитерка", "Расходники", "Упаковка")
         defaults.forEachIndexed { index, name ->
@@ -87,11 +95,20 @@ class DbHelper(context: Context) : SQLiteOpenHelper(context, DB_NAME, null, DB_V
     }
 
     override fun onUpgrade(db: SQLiteDatabase, oldVersion: Int, newVersion: Int) {
-        // Схема версии 1; миграции добавим, когда появится v2.
+        if (oldVersion < 2) {
+            db.execSQL(
+                """
+                CREATE TABLE IF NOT EXISTS aliases (
+                    name TEXT PRIMARY KEY,
+                    product_id INTEGER NOT NULL
+                )
+                """.trimIndent()
+            )
+        }
     }
 
     companion object {
         const val DB_NAME = "coffemod.db"
-        const val DB_VERSION = 1
+        const val DB_VERSION = 2
     }
 }

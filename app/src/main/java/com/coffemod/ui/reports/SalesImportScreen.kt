@@ -18,15 +18,18 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
 import androidx.compose.material.icons.outlined.UploadFile
+import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -56,6 +59,7 @@ fun SalesImportScreen(
     var fileName by remember { mutableStateOf("") }
     var rows by remember { mutableStateOf<List<SaleLine>>(emptyList()) }
     var error by remember { mutableStateOf<String?>(null) }
+    var bindTarget by remember { mutableStateOf<SaleLine?>(null) }
 
     BackHandler { onBack() }
 
@@ -64,7 +68,10 @@ fun SalesImportScreen(
         runCatching {
             val text = context.contentResolver.openInputStream(uri)?.bufferedReader(Charsets.UTF_8)?.use { it.readText() }
                 ?: error("Не удалось открыть файл")
-            fileName = uri.lastPathSegment?.substringAfterLast('/') ?: "файл"
+            fileName = context.contentResolver.query(uri, null, null, null, null)?.use { cursor ->
+                val index = cursor.getColumnIndex(android.provider.OpenableColumns.DISPLAY_NAME)
+                if (index >= 0 && cursor.moveToFirst()) cursor.getString(index) else null
+            } ?: uri.lastPathSegment?.substringAfterLast('/') ?: "файл"
             rows = SalesImport.parse(text, repo)
             error = if (rows.isEmpty()) "Не нашла ни одной строки «дата; товар; количество»" else null
         }.onFailure {
@@ -163,8 +170,11 @@ fun SalesImportScreen(
                     }
                     items(unmatched, key = { "u" + it.raw + it.date }) { row ->
                         Surface(color = MaterialTheme.colorScheme.surfaceVariant, shape = MaterialTheme.shapes.large, modifier = Modifier.fillMaxWidth()) {
-                            Row(modifier = Modifier.padding(horizontal = 16.dp, vertical = 10.dp)) {
-                                Column {
+                            Row(
+                                modifier = Modifier.padding(start = 16.dp, end = 8.dp, top = 10.dp, bottom = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Column(modifier = Modifier.weight(1f)) {
                                     Text(row.raw, color = MaterialTheme.colorScheme.onSurface)
                                     Text(
                                         "${row.date} · ${formatQty(row.qty)} — добавь товар или штрихкод",
@@ -172,11 +182,55 @@ fun SalesImportScreen(
                                         color = MaterialTheme.colorScheme.onSurfaceVariant,
                                     )
                                 }
+                                TextButton(onClick = { bindTarget = row }) { Text("Привязать") }
                             }
                         }
                     }
                 }
             }
         }
+    }
+
+    bindTarget?.let { row ->
+        var search by remember(row.raw) { mutableStateOf("") }
+        val products = remember(search) { repo.products(search) }
+        AlertDialog(
+            onDismissRequest = { bindTarget = null },
+            title = { Text("Привязать: ${row.raw}") },
+            text = {
+                Column {
+                    OutlinedTextField(
+                        value = search,
+                        onValueChange = { search = it },
+                        label = { Text("Поиск товара") },
+                        singleLine = true,
+                        modifier = Modifier.fillMaxWidth(),
+                    )
+                    Spacer(Modifier.height(8.dp))
+                    LazyColumn(modifier = Modifier.height(320.dp)) {
+                        items(products, key = { it.id }) { product ->
+                            Row(
+                                modifier = Modifier
+                                    .fillMaxWidth()
+                                    .padding(vertical = 10.dp),
+                                verticalAlignment = Alignment.CenterVertically,
+                            ) {
+                                Text(product.name, modifier = Modifier.weight(1f), color = MaterialTheme.colorScheme.onSurface)
+                                androidx.compose.material3.TextButton(onClick = {
+                                    repo.setAlias(row.raw, product.id)
+                                    rows = rows.map {
+                                        if (it.raw == row.raw && it.product == null) it.copy(product = product) else it
+                                    }
+                                    bindTarget = null
+                                }) { Text("Выбрать") }
+                            }
+                        }
+                    }
+                }
+            },
+            confirmButton = {
+                androidx.compose.material3.TextButton(onClick = { bindTarget = null }) { Text("Отмена") }
+            },
+        )
     }
 }

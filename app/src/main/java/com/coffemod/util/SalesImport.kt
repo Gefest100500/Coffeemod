@@ -44,6 +44,7 @@ object SalesImport {
         } ?: ';'
 
         val byName = repo.products().associateBy { it.name.trim().lowercase() }
+        val aliases = repo.aliases()
 
         var start = 0
         val first = lines.first().lowercase()
@@ -61,7 +62,9 @@ object SalesImport {
             val raw = parts[1].trim()
             val qty = parts[2].trim().replace(',', '.').toDoubleOrNull() ?: continue
             if (qty <= 0 || raw.isEmpty()) continue
-            val product = repo.productByCode(raw) ?: byName[raw.lowercase()]
+            val product = repo.productByCode(raw)
+                ?: byName[raw.lowercase()]
+                ?: aliases[raw.lowercase()]?.let { repo.product(it) }
             result += SaleLine(normalizeDate(date), raw, qty, product)
         }
         return result

@@ -231,7 +231,7 @@ private fun StartScreen(productCount: Int, onScan: () -> Unit, onProducts: () ->
 
         Spacer(Modifier.weight(1f))
         Text(
-            "v0.7 · офлайн · без интернета",
+            "v0.8 · офлайн · без интернета",
             fontSize = 12.sp,
             color = MaterialTheme.colorScheme.onSurfaceVariant,
         )

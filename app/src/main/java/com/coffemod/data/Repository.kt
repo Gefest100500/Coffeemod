@@ -302,4 +302,26 @@ class Repository(context: Context) {
         }, android.database.sqlite.SQLiteDatabase.CONFLICT_IGNORE)
         return code
     }
+
+    // ── алиасы кассовых названий ─────────────────────────────────────────────
+
+    fun aliases(): Map<String, Long> {
+        val result = mutableMapOf<String, Long>()
+        db.rawQuery("SELECT name, product_id FROM aliases", null).use { c ->
+            while (c.moveToNext()) result[c.getString(0)] = c.getLong(1)
+        }
+        return result
+    }
+
+    fun setAlias(rawName: String, productId: Long) {
+        db.insertWithOnConflict(
+            "aliases",
+            null,
+            ContentValues().apply {
+                put("name", rawName.trim().lowercase())
+                put("product_id", productId)
+            },
+            android.database.sqlite.SQLiteDatabase.CONFLICT_REPLACE,
+        )
+    }
 }
