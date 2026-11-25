@@ -1,0 +1,28 @@
+# Сборка
+.gradle/
+.kotlin/
+build/
+app/build/
+captures/
+*.apk
+*.aab
+*.ap_
+*.dex
+
+# Локальные настройки IDE и пути к SDK
+local.properties
+.idea/
+*.iml
+
+# Ключи и пароли — никогда не коммитим
+keystore/
+*.jks
+*.keystore
+signing.txt
+
+# ОС
+.DS_Store
+Thumbs.db
+
+# Логи
+*.log
