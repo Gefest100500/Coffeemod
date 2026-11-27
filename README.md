@@ -1,5 +1,12 @@
 # CoffeMod
 
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.4-7F52FF)](https://kotlinlang.org/)
+[![Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4)](https://developer.android.com/jetpack/compose)
+[![CameraX](https://img.shields.io/badge/CameraX-1.7-3DDC84)](https://developer.android.com/media/camera/camerax)
+[![minSdk](https://img.shields.io/badge/minSdk-26-brightgreen)](https://developer.android.com)
+[![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+
+
 Инвентаризация кофейни: товары, сканирование штрихкодов, приход/расход, пересчёт, этикетки и отчёты.
 
 Приложение полностью офлайн: данные лежат в SQLite на устройстве, интернет не требуется.
