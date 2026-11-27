@@ -65,4 +65,4 @@ Kotlin, Jetpack Compose (Material 3), CameraX, ML Kit, ZXing, SQLite (без ORM
 ## Нужен похожий инструмент?
 
 Делаю приложения для инвентаризации и автоматизацию отчётности под конкретный процесс.
-Открыт к проектам — пишите: [GitHub](https://github.com/Gefest100500).
+Открыт к проектам: Telegram [@Alex5063](https://t.me/Alex5063) · почта Idia94@mail.ru
