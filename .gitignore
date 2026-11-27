@@ -32,3 +32,6 @@ Thumbs.db
 /*.xml
 /*.csv
 /*.xlsx
+
+# секреты сборки
+secrets.properties

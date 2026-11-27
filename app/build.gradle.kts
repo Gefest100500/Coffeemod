@@ -1,7 +1,17 @@
+import java.util.Properties
+
 plugins {
     id("com.android.application")
     id("org.jetbrains.kotlin.plugin.compose")
 }
+
+val secrets = Properties().apply {
+    val file = rootProject.file("secrets.properties")
+    if (file.exists()) file.inputStream().use { load(it) }
+}
+
+fun secret(key: String, fallback: String = ""): String =
+    (secrets.getProperty(key) ?: fallback).replace("\\", "\\\\").replace("\"", "\\\"")
 
 android {
     namespace = "com.coffemod"
@@ -12,17 +22,23 @@ android {
         applicationId = "com.coffemod"
         minSdk = 26
         targetSdk = 37
-        versionCode = 4
-        versionName = "0.8.0"
+        versionCode = 5
+        versionName = "0.8.1"
     }
 
     signingConfigs {
         create("release") {
-            storeFile = rootProject.file("keystore/coffemod-release.jks")
-            storePassword = "Kashpendra-CoffeMod-2026"
-            keyAlias = "kashpendra"
-            keyPassword = "Kashpendra-CoffeMod-2026"
-            storeType = "JKS"
+            val keystorePath = secret("keystore.file", "keystore/coffemod-release.jks")
+            if (keystorePath.isNotBlank()) {
+                val keystoreFile = rootProject.file(keystorePath)
+                if (keystoreFile.exists()) {
+                    storeFile = keystoreFile
+                    storePassword = secret("keystore.password")
+                    keyAlias = secret("keystore.alias", "kashpendra")
+                    keyPassword = secret("keystore.keyPassword", secret("keystore.password"))
+                    storeType = "PKCS12"
+                }
+            }
         }
     }
 
