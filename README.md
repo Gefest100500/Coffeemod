@@ -1,5 +1,6 @@
 # CoffeMod
 
+[![build](https://github.com/Gefest100500/Coffeemod/actions/workflows/build.yml/badge.svg)](https://github.com/Gefest100500/Coffeemod/actions/workflows/build.yml)
 [![Kotlin](https://img.shields.io/badge/Kotlin-2.4-7F52FF)](https://kotlinlang.org/)
 [![Compose](https://img.shields.io/badge/Jetpack%20Compose-Material%203-4285F4)](https://developer.android.com/jetpack/compose)
 [![CameraX](https://img.shields.io/badge/CameraX-1.7-3DDC84)](https://developer.android.com/media/camera/camerax)
