@@ -5,11 +5,20 @@
 [![CameraX](https://img.shields.io/badge/CameraX-1.7-3DDC84)](https://developer.android.com/media/camera/camerax)
 [![minSdk](https://img.shields.io/badge/minSdk-26-brightgreen)](https://developer.android.com)
 [![License](https://img.shields.io/badge/license-MIT-blue)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/Gefest100500/Coffeemod?label=APK)](https://github.com/Gefest100500/Coffeemod/releases/latest)
 
 
 Инвентаризация кофейни: товары, сканирование штрихкодов, приход/расход, пересчёт, этикетки и отчёты.
 
 Приложение полностью офлайн: данные лежат в SQLite на устройстве, интернет не требуется.
+
+<p align="center">
+  <img src="docs/screenshots/01-home.png" width="250" alt="Главный экран">
+  <img src="docs/screenshots/02-products.png" width="250" alt="Товары">
+  <img src="docs/screenshots/03-accounting.png" width="250" alt="Учёт">
+</p>
+
+> На скриншотах — демонстрационные данные. **Скачать APK:** [последний релиз](https://github.com/Gefest100500/Coffeemod/releases/latest).
 
 ## Возможности
 
